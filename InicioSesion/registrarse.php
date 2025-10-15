@@ -6,6 +6,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
      $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
      $role_id = $_POST['role_id'];
 
+if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+         echo "<script>
+             alert('El usuario debe ser un correo electrónico válido');
+             window.location.href='../registro.php';
+         </script>";
+         exit;
+     }
 
      try{
         $connection = new Connection();

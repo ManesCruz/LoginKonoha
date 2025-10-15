@@ -15,7 +15,7 @@
         <div class="title">Registro</div>
         <form action="InicioSesion/registrarse.php" method="POST">
             <div class="field">
-                <input type="text" id="username" name="username" required>
+                <input type="email" id="username" name="username" required>
                 <label for="username">Nombre de usuario</label>
             </div>
             <div class="field">

@@ -10,7 +10,7 @@
         <div class="title"><h1>Iniciar Sesión</h1></div>
         <form action="InicioSesion/login.php" method="POST">
             <div class="field"><!-- Espacio para el Usuario -->
-                <input type="text" name="username" required>
+                <input type="email" name="username" required>
                 <label for="username">Usuario</label>
             </div>
             <div class="field"><!-- Espacio para la Contraseña -->

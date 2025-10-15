@@ -7,6 +7,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $username = $_POST['username']??'';
     $password = $_POST['password']??'';
 
+    if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>
+            alert('Por favor ingrese un correo electrónico válido');
+            window.location.href='../index.php';
+        </script>";
+        exit;
+    }
+
     try{
         $connection = new Connection();
         $pdo= $connection->getConnection();

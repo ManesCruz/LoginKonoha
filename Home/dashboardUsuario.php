@@ -2,10 +2,17 @@
 session_start();
 
 // Verifica si el usuario está autenticado
-if (!isset($_SESSION['username']) || $_SESSION['role_id'] != 3) { // Suponiendo que el rol de secretaria es 2
+if (!isset($_SESSION['username']) ) { // Suponiendo que el rol de secretaria es 2
     header("Location: ../index.php");
     exit();
 }
+
+// Verifica el rol del usuario
+if ($_SESSION['role_id'] !== 2) {
+    echo "Acceso denegado. Solo los administradores pueden acceder a esta página.";
+    exit;
+}
+
 
 // Conectar a la base de datos
 require_once '../Config/Connection.php';
@@ -13,7 +20,7 @@ $connection = new Connection();
 $pdo = $connection->getConnection();
 
 // Obtener la lista de usuarios
-$sql = "SELECT id, username FROM usuarios";
+$sql = "SELECT id, username FROM users";
 $stmt = $pdo->query($sql);
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
