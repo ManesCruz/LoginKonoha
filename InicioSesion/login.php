@@ -1,5 +1,11 @@
 <?php
 require_once '../config/Connection.php';
+require_once '../PHPMailer-master/src/PHPMailer.php';
+require_once '../PHPMailer-master/src/SMTP.php';
+require_once '../PHPMailer-master/src/Exception.php';
+
+
+use PHPMailer\PHPMailer\PHPMailer;
 
 session_start();
 
@@ -24,24 +30,41 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $stmt->execute(['username'=>$username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
         if($user && password_verify($password, $user['password'])){
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role_id'] = $user['role_id'];
+            //verificación en 2 pasos
+            $codigo = rand(100000, 999999);
 
-            if($user['role_id'] == 1){
-            header("Location: ../Home/dashboard.php");
-            }elseif($user['role_id'] == 2){
-                header("Location: ../Home/dashboardUsuario.php");
-        } else{
-            echo 'acceso denegado';
+            $_SESSION['2fa_user_id'] = $user['id'];
+            $_SESSION['2fa_username'] = $user['username'];
+            $_SESSION['2fa_role'] = $user['role_id'];
+            $_SESSION['2fa_code'] = $codigo;
+
+            // Enviar correo
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'TUCORREO@gmail.com';  
+            $mail->Password = 'APP_PASSWORD_AQUI';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            $mail->setFrom('TUCORREO@gmail.com', 'Konoha Login');
+            $mail->addAddress($username);
+            $mail->Subject = 'Código de verificación 2FA';
+            $mail->Body = "Tu código de acceso es: $codigo";
+
+            $mail->send();
+
+            header("Location: verificar_codigo.php");
+            exit;
         }
-        exit;
-    }else{
-        $error_message='credenciales invalidas';
-}
-}
 
+        echo "<script>alert('Credenciales inválidas'); window.location.href='../index.php';</script>";
+        exit;
+
+    }
     catch(Throwable $th){
            $error_message = "conexion fallida " . $th->getMessage();
                 exit;
