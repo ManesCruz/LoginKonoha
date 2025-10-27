@@ -341,7 +341,32 @@ form .signup-link a:hover{
     background: #4158d0;
     color: #fff;
 }
+.field {
+  margin-bottom: 15px; /* separa cada campo */
+}
 
+input[type="text"] {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 200px;
+  font-size: 15px;
+}
+
+input[type="submit"] {
+  background: linear-gradient(90deg, #6A11CB, #2575FC);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+input[type="submit"]:hover {
+  opacity: 0.9;
+}
 
 
 
