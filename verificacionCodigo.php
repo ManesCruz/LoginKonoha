@@ -7,6 +7,7 @@ if (!isset($_SESSION['2fa_user_id'])) {
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
