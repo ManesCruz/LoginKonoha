@@ -13,6 +13,7 @@ En caso de utilizar la aplicación Web existen 2 modos para instalarla, en la p�
 Para Instalar la BD por script de query (SQL) se necesita copiar el contenido desde el archivo .sql de la Base de Datos correspondiente, cerciosandose de haber incluido las siguientes sentencias en el Script (en caso de no haber sido incluidos al exportar el archivo):
 
 CREATE DATABASE IF NOT EXISTS ``; 
+
 USE ``;
 
 ...create database puede añadirsele "DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci" dentros de la misma linea tras los ``.
