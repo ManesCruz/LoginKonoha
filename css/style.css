@@ -369,4 +369,90 @@ input[type="submit"]:hover {
 }
 
 
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f6f8;
+    color: #333;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #1f2937;
+    color: white;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 10px 0;
+}
+
+.sidebar a.active,
+.sidebar a:hover {
+    background-color: #374151;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.main-content {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.search-form {
+    margin-top: 10px;
+}
+
+input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1d4ed8;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #2563eb;
+    color: white;
+}
+
 

@@ -3,7 +3,6 @@ session_start();
 
 // Evitar caché
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 header("Expires: 0");
 
@@ -13,24 +12,8 @@ if (!isset($_SESSION['username']) || empty($_SESSION['2fa_verified'])) {
     exit;
 }
 
-// Conexión a base de datos
-require_once '../Config/Connection.php';
-$connection = new Connection();
-$pdo = $connection->getConnection();
-
 $username = $_SESSION['username'];
 $rol = $_SESSION['role_id'] ?? 0;
-
-// Cargar datos según el rol
-if ($rol === 1) {
-    $sql = "SELECT COUNT(*) AS total_usuarios FROM users";
-    $stmt = $pdo->query($sql);
-    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
-} elseif ($rol === 2) {
-    $sql = "SELECT id, username FROM users";
-    $stmt = $pdo->query($sql);
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -39,7 +22,7 @@ if ($rol === 1) {
     <title>Panel de Control</title>
     <link rel="stylesheet" href="../css/style.css">
     <script>
-        // Bloquear botón "Atrás"
+        // Bloquear botón atrás
         window.history.pushState(null, "", window.location.href);
         window.addEventListener("popstate", () => {
             window.history.pushState(null, "", window.location.href);
@@ -49,9 +32,11 @@ if ($rol === 1) {
 <body>
     <div class="sidebar">
         <h2>Panel de Control</h2>
-        <a href="#">Inicio</a>
+        <a href="dashboard.php">Inicio</a>
         <a href="#">Archivos</a>
-        <a href="#">Perfil</a>
+        <?php if ($rol === 1): ?>
+            <a href="pestañaUsuarios.php">Usuarios</a>
+        <?php endif; ?>
         <a href="../InicioSesion/CerrarSesion.php">Cerrar sesión</a>
     </div>
 
@@ -61,22 +46,11 @@ if ($rol === 1) {
             <p>Rol: <?= $rol === 1 ? 'Administrador' : 'Usuario' ?></p>
         </div>
 
-        <?php if ($rol === 1): ?>
-            <div class="card">
-                <h3>Usuarios registrados</h3>
-                <p><?= $stats['total_usuarios'] ?? 0 ?></p>
-            </div>
-        <?php elseif ($rol === 2): ?>
-            <table>
-                <tr><th>ID</th><th>Nombre de Usuario</th></tr>
-                <?php foreach ($users as $u): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($u['id']) ?></td>
-                        <td><?= htmlspecialchars($u['username']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </table>
-        <?php endif; ?>
+        <div class="content">
+            <h2>Inicio del Panel</h2>
+            <p>Desde aquí puedes acceder a las secciones del sistema.  
+               Si eres administrador, podrás gestionar usuarios en la pestaña "Usuarios".</p>
+        </div>
     </div>
 </body>
 </html>
