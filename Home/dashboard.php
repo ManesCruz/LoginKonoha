@@ -1,52 +1,82 @@
 <?php
 session_start();
 
-// Verifica si el usuario ha iniciado sesión
-if (!isset($_SESSION['username'])) {
-    header('Location: ../index.php');
+// Evitar caché
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
+// Verificar sesión
+if (!isset($_SESSION['username']) || empty($_SESSION['2fa_verified'])) {
+    header("Location: ../index.php");
     exit;
 }
 
-// Verifica el rol del usuario
-if ($_SESSION['role_id'] !== 1) {
-    echo "Acceso denegado. Solo los administradores pueden acceder a esta página.";
-    exit;
+// Conexión a base de datos
+require_once '../Config/Connection.php';
+$connection = new Connection();
+$pdo = $connection->getConnection();
+
+$username = $_SESSION['username'];
+$rol = $_SESSION['role_id'] ?? 0;
+
+// Cargar datos según el rol
+if ($rol === 1) {
+    $sql = "SELECT COUNT(*) AS total_usuarios FROM users";
+    $stmt = $pdo->query($sql);
+    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+} elseif ($rol === 2) {
+    $sql = "SELECT id, username FROM users";
+    $stmt = $pdo->query($sql);
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Panel de Control</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
+    <script>
+        // Bloquear botón "Atrás"
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", () => {
+            window.history.pushState(null, "", window.location.href);
+        });
+    </script>
 </head>
 <body>
     <div class="sidebar">
-        <h2>Dashboard</h2>
+        <h2>Panel de Control</h2>
         <a href="#">Inicio</a>
-        <a href="#">Estadísticas</a>
-        <a href="#">Informes</a>
-        <a href="#">Configuración</a>
+        <a href="#">Archivos</a>
+        <a href="#">Perfil</a>
         <a href="../InicioSesion/CerrarSesion.php">Cerrar sesión</a>
     </div>
-    <div class="main">
-        <h1>Bienvenido al Dashboard</h1>
-        <div class="card">
-            <h3>Resumen de Actividades</h3>
-            <p>Aquí puedes ver un resumen de tus actividades recientes.</p>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Bienvenido, <?= htmlspecialchars($username) ?></h1>
+            <p>Rol: <?= $rol === 1 ? 'Administrador' : 'Usuario' ?></p>
         </div>
-        <div class="card">
-            <h3>Estadísticas Recientes</h3>
-            <p>Visualiza las estadísticas más recientes aquí.</p>
-        </div>
-        <div class="card">
-            <h3>Informes Generales</h3>
-            <p>Consulta los informes generales de tu sistema.</p>
-        </div>
+
+        <?php if ($rol === 1): ?>
+            <div class="card">
+                <h3>Usuarios registrados</h3>
+                <p><?= $stats['total_usuarios'] ?? 0 ?></p>
+            </div>
+        <?php elseif ($rol === 2): ?>
+            <table>
+                <tr><th>ID</th><th>Nombre de Usuario</th></tr>
+                <?php foreach ($users as $u): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($u['id']) ?></td>
+                        <td><?= htmlspecialchars($u['username']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php endif; ?>
     </div>
 </body>
 </html>

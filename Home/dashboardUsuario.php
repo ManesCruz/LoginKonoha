@@ -1,68 +1,55 @@
 <?php
 session_start();
 
-// Verifica si el usuario está autenticado
-if (!isset($_SESSION['username']) ) { // Suponiendo que el rol de secretaria es 2
-    header("Location: ../index.php");
-    exit();
-}
+// Evitar caché
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
 
-// Verifica el rol del usuario
-if ($_SESSION['role_id'] !== 2) {
-    echo "Acceso denegado. Solo los administradores pueden acceder a esta página.";
+// Bloquear acceso sin login
+if (!isset($_SESSION['username']) || empty($_SESSION['2fa_verified'])) {
+    header("Location: ../index.php");
     exit;
 }
 
-
-// Conectar a la base de datos
 require_once '../Config/Connection.php';
 $connection = new Connection();
 $pdo = $connection->getConnection();
 
-// Obtener la lista de usuarios
-$sql = "SELECT id, username FROM users";
-$stmt = $pdo->query($sql);
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard de Secretaria</title>
+    <title>Panel de Usuario</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
+    <script>
+        // Bloquear volver con “Atrás”
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", () => {
+            window.history.pushState(null, "", window.location.href);
+        });
+    </script>
 </head>
 <body>
     <div class="sidebar">
-        <h2>Secretaria</h2>
-        <a href="secretary_dashboard.php">Inicio</a>
-        <a href="register.php">Agregar Usuario</a>
+        <h2>Usuario</h2>
+        <a href="#">Inicio</a>
+        <a href="#">Mis archivos</a>
+        <a href="#">Perfil</a>
         <a href="../InicioSesion/CerrarSesion.php">Cerrar sesión</a>
     </div>
+
     <div class="main-content">
         <div class="header">
-            <h1>Dashboard de Secretaria</h1>
+            <h1>Bienvenido, <?= htmlspecialchars($username) ?></h1>
+            <p>Rol: Usuario</p>
         </div>
-        <div class="user-list">
-            <h2>Lista de Usuarios</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre de Usuario</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $user): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($user['id']); ?></td>
-                            <td><?php echo htmlspecialchars($user['username']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+
+        <p>Este es tu panel de usuario.</p>
     </div>
 </body>
 </html>
