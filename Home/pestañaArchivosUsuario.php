@@ -12,7 +12,29 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
+$role_id = $_SESSION['role_id'] ?? 2; // Por si acaso
+
+// Determinar nivel máximo del rol
+switch ($role_id) {
+    case 1: // Hokage
+        $nivel_maximo = 'S';
+        break;
+    case 4: // Jounin
+    case 5: // Anbu
+        $nivel_maximo = 'A';
+        break;
+    case 3: // Chunin
+        $nivel_maximo = 'C';
+        break;
+    default: // Genin u otros
+        $nivel_maximo = 'D';
+        break;
+}
+
+// Guardamos esto en sesión por si lo usa buscarArchivos.php
+$_SESSION['nivel_maximo'] = $nivel_maximo;
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -39,7 +61,7 @@ $username = $_SESSION['username'];
         <h1>Gestión de Archivos</h1>
 
         <!-- 📁 Formulario de subida -->
-        <form action="../archivos/listarArchivos.php" method="POST" enctype="multipart/form-data" class="upload-form">
+        <form action="../archivos/listarArchivosUsuarios.php" method="POST" enctype="multipart/form-data" class="upload-form">
             <label>Seleccionar archivo PDF:</label>
             <input type="file" name="archivo" accept=".pdf" required>
 

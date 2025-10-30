@@ -440,7 +440,7 @@ button:hover {
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    background: #dae5ee;;
     border-radius: 10px;
     overflow: hidden;
 }
@@ -508,14 +508,12 @@ th {
 }
 
 #tablaArchivos th, #tablaArchivos td {
-  border: 1px solid #ccc;
+  border: 1px solid #eef7fd;;;
   padding: 8px;
   text-align: center;
 }
 
-#tablaArchivos th {
-  background-color: #f4f4f4;
-}
+
 
 
 

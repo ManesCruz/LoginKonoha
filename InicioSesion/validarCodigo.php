@@ -52,12 +52,9 @@ if ($codigoIngresado === $codigoCorrecto) {
     // Redirigir según rol (ajusta valores si tu rol es distinto)
     if ($_SESSION['role_id'] == 1) {
         header("Location: ../Home/dashboard.php");
-    } elseif ($_SESSION['role_id'] == 2) {
+    } elseif ($_SESSION['role_id'] !== 1) {
         header("Location: ../Home/dashboardUsuario.php");
-    } else {
-        // Si no hay rol, volver al index o a una página por defecto
-        header("Location: ../index.php");
-    }
+    } 
     exit;
 
 } else {

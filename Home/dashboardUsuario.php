@@ -40,7 +40,7 @@ $username = $_SESSION['username'];
     <div class="sidebar">
         <h2>Panel de Control</h2>
         <a href="dashboardUsuario.php">Inicio</a>
-        <a href="pestañaArchivos.php">Archivos</a>
+        <a href="pestañaArchivosUsuario.php">Archivos</a>
         <a href="../InicioSesion/CerrarSesion.php">Cerrar sesión</a>
     </div>
 
