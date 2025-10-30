@@ -37,10 +37,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Generar código 2FA
             $codigo = rand(100000, 999999);
 
+            // Guardamos datos temporales de verificación
             $_SESSION['2fa_user_id'] = $user['id'];
             $_SESSION['2fa_username'] = $user['username'];
             $_SESSION['2fa_role'] = $user['role_id'];
             $_SESSION['2fa_code'] = $codigo;
+
+            // También guardamos los datos principales
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role_id'] = $user['role_id'];
+            $_SESSION['2fa_verified'] = false; // aún no ha verificado el código
 
             // Envío del código por correo
             $mail = new PHPMailer(true);
@@ -71,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $mail->send();
 
+                // Redirigir a la página de verificación
                 header("Location:  /LoginKonoha/verificacionCodigo.php");
                 exit;
 

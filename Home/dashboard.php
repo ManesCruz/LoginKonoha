@@ -34,9 +34,7 @@ $rol = $_SESSION['role_id'] ?? 0;
         <h2>Panel de Control</h2>
         <a href="dashboard.php">Inicio</a>
         <a href="pestañaArchivos.php">Archivos</a>
-        <?php if ($rol === 1): ?>
-            <a href="pestañaUsuarios.php">Usuarios</a>
-        <?php endif; ?>
+        <a href="pestañaUsuarios.php">Usuarios</a>
         <a href="../InicioSesion/CerrarSesion.php">Cerrar sesión</a>
     </div>
 
