@@ -454,5 +454,68 @@ th {
     background-color: #2563eb;
     color: white;
 }
+.upload-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: #f8f8f8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.upload-form label {
+  font-weight: bold;
+}
+
+.upload-form select,
+.upload-form input {
+  padding: 6px;
+}
+
+.upload-form button {
+  grid-column: span 2;
+  padding: 8px;
+  background: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.upload-form button:hover {
+  background: #005fa3;
+}
+
+.busqueda-filtros {
+  margin-bottom: 20px;
+}
+
+.busqueda-filtros input {
+  padding: 8px;
+  width: 250px;
+  margin-right: 10px;
+}
+
+.filtros select {
+  padding: 8px;
+  margin-right: 5px;
+}
+
+#tablaArchivos {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#tablaArchivos th, #tablaArchivos td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+#tablaArchivos th {
+  background-color: #f4f4f4;
+}
+
 
 

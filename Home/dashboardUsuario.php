@@ -3,7 +3,6 @@ session_start();
 
 // Evitar caché
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 header("Expires: 0");
 
@@ -38,7 +37,7 @@ $username = $_SESSION['username'];
     <div class="sidebar">
         <h2>Usuario</h2>
         <a href="#">Inicio</a>
-        <a href="#">Mis archivos</a>
+        <a href="#">Archivos</a>
         <a href="#">Perfil</a>
         <a href="../InicioSesion/CerrarSesion.php">Cerrar sesión</a>
     </div>
@@ -46,7 +45,7 @@ $username = $_SESSION['username'];
     <div class="main-content">
         <div class="header">
             <h1>Bienvenido, <?= htmlspecialchars($username) ?></h1>
-            <p>Rol: Usuario</p>
+            <p>Rol: <?= htmlspecialchars($roles)?>
         </div>
 
         <p>Este es tu panel de usuario.</p>

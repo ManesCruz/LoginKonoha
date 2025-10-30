@@ -33,7 +33,7 @@ $rol = $_SESSION['role_id'] ?? 0;
     <div class="sidebar">
         <h2>Panel de Control</h2>
         <a href="dashboard.php">Inicio</a>
-        <a href="#">Archivos</a>
+        <a href="pestañaArchivos.php">Archivos</a>
         <?php if ($rol === 1): ?>
             <a href="pestañaUsuarios.php">Usuarios</a>
         <?php endif; ?>
@@ -43,7 +43,7 @@ $rol = $_SESSION['role_id'] ?? 0;
     <div class="main-content">
         <div class="header">
             <h1>Bienvenido, <?= htmlspecialchars($username) ?></h1>
-            <p>Rol: <?= $rol === 1 ? 'Administrador' : 'Usuario' ?></p>
+            <p>Rol: <?= $rol === 1 ? 'Hokage' : 'Usuario' ?></p>
         </div>
 
         <div class="content">
