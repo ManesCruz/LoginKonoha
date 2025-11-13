@@ -1,7 +1,7 @@
 <?php
     class Connection {
         private $host = 'localhost';
-        private $port =  '3307'; // Cambia esto si tu puerto es diferente
+        private $port =  '3306'; // Cambia esto si tu puerto es diferente
         private $dbname = 'login_konoha';   
         private $username = 'root';     
         private $password = ""; 

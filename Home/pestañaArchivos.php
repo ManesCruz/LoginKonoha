@@ -1,5 +1,5 @@
 <?php
-require_once '../Config/Connection.php';
+require_once '../config/Connection.php';
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -17,8 +17,12 @@ $username = $_SESSION['username'];
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Archivos</title>
+    <title>Gestión de Archivos</title>
     <link rel="stylesheet" href="../css/style.css">
+
+    <!-- ✅ Librería SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         function toggleTipoJutsu() {
             const tipoArchivo = document.getElementById("tipo_archivo").value;
@@ -141,6 +145,7 @@ $username = $_SESSION['username'];
             </div>
         </div>
 
+        <!-- 📋 Tabla de archivos -->
         <table id="tablaArchivos">
             <thead>
                 <tr>
@@ -152,6 +157,7 @@ $username = $_SESSION['username'];
                     <th>Subido por</th>
                     <th>Fecha</th>
                     <th>Ver</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -166,6 +172,7 @@ $username = $_SESSION['username'];
             const clan = document.getElementById('filtroClan');
             const elemento = document.getElementById('filtroElemento');
 
+            // 🔄 Cargar archivos
             async function cargarArchivos() {
                 const params = new URLSearchParams({
                     buscar: buscar.value,
@@ -180,7 +187,7 @@ $username = $_SESSION['username'];
 
                 tabla.innerHTML = '';
                 if (data.length === 0) {
-                    tabla.innerHTML = '<tr><td colspan="8">No se encontraron archivos.</td></tr>';
+                    tabla.innerHTML = '<tr><td colspan="9">No se encontraron archivos.</td></tr>';
                     return;
                 }
 
@@ -195,6 +202,7 @@ $username = $_SESSION['username'];
                         <td>${a.usuario}</td>
                         <td>${a.fecha_subida}</td>
                         <td><a href="${a.ruta}" target="_blank">📄 Abrir</a></td>
+                        <td><button class="eliminar-btn" data-id="${a.id}" title="Eliminar">🗑️</button></td>
                     `;
                     tabla.appendChild(tr);
                 });
@@ -204,6 +212,60 @@ $username = $_SESSION['username'];
             [buscar, tipo, riesgo, clan, elemento].forEach(el => {
                 el.addEventListener('input', cargarArchivos);
                 el.addEventListener('change', cargarArchivos);
+            });
+
+            // 🗑️ Eliminar archivos con SweetAlert2
+            tabla.addEventListener('click', async (e) => {
+                if (e.target.classList.contains('eliminar-btn')) {
+                    const id = e.target.dataset.id;
+
+                    const confirmacion = await Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: 'El archivo será eliminado permanentemente.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    });
+
+                    if (confirmacion.isConfirmed) {
+                        try {
+                            const res = await fetch('../archivos/eliminarArchivos.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: new URLSearchParams({ id })
+                            });
+
+                            const data = await res.json();
+                            console.log("Respuesta del servidor:", data);
+
+                            if (data.success) {
+                                e.target.closest('tr').remove();
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Eliminado correctamente',
+                                    text: data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message
+                                });
+                            }
+                        } catch (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error inesperado',
+                                text: 'No se pudo conectar con el servidor.'
+                            });
+                            console.error(error);
+                        }
+                    }
+                }
             });
         });
         </script>

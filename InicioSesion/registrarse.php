@@ -5,6 +5,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
      $username = $_POST['username'];
      $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
      $role_id = $_POST['role_id'];
+     $documento_identidad =$_POST['documento_identidad'];
+     $nombre = $_POST['nombre'];
 
 if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
          echo "<script>
@@ -19,12 +21,14 @@ if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
         $pdo= $connection->getConnection();
 
 
-        $sql = "INSERT INTO users (username, password, role_id) VALUES (:username, :password, :role_id)";
+        $sql = "INSERT INTO users (username, password, role_id ,documento_identidad,nombre) VALUES (:username, :password, :role_id, :documento_identidad, :nombre)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             'username'=>$username, 
             'password'=>$password, 
-            'role_id'=>$role_id
+            'role_id'=>$role_id,
+            'documento_identidad'=>$documento_identidad,
+            'nombre'=> $nombre
         ]);
 
         echo "<script>

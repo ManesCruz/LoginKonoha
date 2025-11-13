@@ -16,7 +16,15 @@
         <form action="InicioSesion/registrarse.php" method="POST">
             <div class="field">
                 <input type="email" id="username" name="username" required>
-                <label for="username">Nombre de usuario</label>
+                <label for="username">Correo</label>
+            </div>
+            <div class="field">
+                <input type="text" id="nombre" name="nombre" required>
+                <label for="nombre">Nombre y Apellido</label>
+            </div>
+            <div class="field">
+                <input type="text" id="documento_identidad" name="documento_identidad" required>
+                <label for="documento_identidad"># de documento</label>
             </div>
             <div class="field">
                 <input type="password" id="password" name="password" required>
@@ -24,8 +32,7 @@
             </div>
             <div class="field">
                 <select id="role_id" name="role_id" required>
-                    <option value="2">Usuario</option>
-                    <!-- Ajusta los valores según los roles disponibles en tu base de datos -->
+                    <option value="2">Genin</option>
                 </select>
                 <label for="role_id">Rol</label>
             </div>
