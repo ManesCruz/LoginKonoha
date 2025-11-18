@@ -1,8 +1,18 @@
 <?php
+session_start();
 require_once '../config/Connection.php';
+require_once 'registrarActividad.php'; // ⬅️ IMPORTAR LA FUNCIÓN
+
 header('Content-Type: application/json');
 
 $response = ["success" => false, "message" => ""];
+
+// Verificar que el usuario esté autenticado
+if (!isset($_SESSION['user_id'])) {
+    $response["message"] = "Usuario no autenticado.";
+    echo json_encode($response);
+    exit;
+}
 
 if (!isset($_POST['id'])) {
     $response["message"] = "ID no recibido.";
@@ -11,6 +21,7 @@ if (!isset($_POST['id'])) {
 }
 
 $id = $_POST['id'];
+$user_id = $_SESSION['user_id'];
 
 try {
     // ✅ Crear la conexión con la clase Connection
@@ -28,12 +39,15 @@ try {
         exit;
     }
 
-    // 🗑️ Eliminar de la base de datos PRIMERO
+    // 🗑️ REGISTRAR ACTIVIDAD ANTES DE ELIMINAR
+    registrarActividad($id, $user_id, 'eliminacion');
+    error_log("✅ Actividad de eliminación registrada para archivo ID: $id");
+
+    // 🗑️ Eliminar de la base de datos
     $stmt = $pdo->prepare("DELETE FROM files WHERE id = ?");
     $stmt->execute([$id]);
 
     // 🧹 Eliminar archivo físico si existe
-    // ✅ CORRECCIÓN: La ruta ya viene completa desde la BD (../uploads/archivo.pdf)
     $rutaArchivo = $file['ruta'];
     
     if (file_exists($rutaArchivo)) {
@@ -49,7 +63,10 @@ try {
         $response["message"] = "Registro eliminado. El archivo físico no existía en el servidor.";
     }
 
+    error_log("✅ Archivo ID $id eliminado por usuario ID $user_id");
+
 } catch (Exception $e) {
+    error_log("❌ Error al eliminar archivo: " . $e->getMessage());
     $response["message"] = "Error al eliminar: " . $e->getMessage();
 }
 

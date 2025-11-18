@@ -52,7 +52,10 @@ if ($codigoIngresado === $codigoCorrecto) {
     // Redirigir según rol (ajusta valores si tu rol es distinto)
     if ($_SESSION['role_id'] == 1) {
         header("Location: ../Home/dashboard.php");
-    } elseif ($_SESSION['role_id'] !== 1) {
+    } 
+    elseif($_SESSION['role_id'] ==5){
+        header("Location: ../Home/dashboardUsuarioAnbu.php");
+    }elseif ($_SESSION['role_id'] !== 1) {
         header("Location: ../Home/dashboardUsuario.php");
     } 
     exit;

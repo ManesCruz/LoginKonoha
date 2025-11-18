@@ -1,5 +1,6 @@
 <?php
 require_once '../config/Connection.php';
+require_once '../archivos/registrarActividad.php'; // ⬅️ AGREGAR
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -11,7 +12,88 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
+// Verificar que exista user_id en sesión
+if (!isset($_SESSION['user_id'])) {
+    die("❌ Error: user_id no encontrado en sesión. Por favor cierra sesión e inicia de nuevo.");
+}
+
 $username = $_SESSION['username'];
+$user_id = $_SESSION['user_id'];
+
+// 📤 PROCESAR SUBIDA DE ARCHIVO
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
+    
+    error_log("USER_ID de sesión: " . $user_id);
+
+    $nivel_riesgo = $_POST['nivel_riesgo'] ?? '';
+    $tipo_archivo = $_POST['tipo_archivo'] ?? '';
+    $tipo_jutsu = $_POST['tipo_jutsu'] ?? null;
+    $clan = $_POST['clan'] ?? '';
+    $elemento = $_POST['elemento'] ?? '';
+
+    if (!isset($_FILES['archivo']) || $_FILES['archivo']['error'] !== UPLOAD_ERR_OK) {
+        echo "<script>alert('❌ Error al subir el archivo.'); window.location.href='pestañaArchivos.php';</script>";
+        exit;
+    }
+
+    $nombreArchivo = basename($_FILES['archivo']['name']);
+    $rutaCarpeta = '../uploads/';
+    if (!is_dir($rutaCarpeta)) mkdir($rutaCarpeta, 0777, true);
+
+    $rutaDestino = $rutaCarpeta . time() . '_' . $nombreArchivo;
+
+    if (move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaDestino)) {
+
+        try {
+            $connection = new Connection();
+            $pdo = $connection->getConnection();
+
+            $sql = "INSERT INTO files 
+                (nombre, nivel_riesgo, tipo_archivo, tipo_jutsu, clan, elemento, ruta, usuario, fecha_subida)
+                VALUES 
+                (:nombre, :nivel_riesgo, :tipo_archivo, :tipo_jutsu, :clan, :elemento, :ruta, :usuario, NOW())";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':nombre' => $nombreArchivo,
+                ':nivel_riesgo' => $nivel_riesgo,
+                ':tipo_archivo' => $tipo_archivo,
+                ':tipo_jutsu' => $tipo_jutsu,
+                ':clan' => $clan,
+                ':elemento' => $elemento,
+                ':ruta' => $rutaDestino,
+                ':usuario' => $user_id
+            ]);
+
+            // Obtener ID del archivo recién insertado
+            $file_id = $pdo->lastInsertId();
+            
+            error_log("✅ Archivo insertado con ID: $file_id");
+
+            // 📝 REGISTRAR ACTIVIDAD DE SUBIDA
+            $resultado = registrarActividad($file_id, $user_id, 'subida');
+            
+            if ($resultado) {
+                error_log("✅ Actividad de subida registrada correctamente");
+            } else {
+                error_log("❌ Falló el registro de actividad de subida");
+            }
+
+            echo "<script>
+                    alert('✅ Archivo subido correctamente.');
+                    window.location.href = 'pestañaArchivos.php';
+                  </script>";
+            exit;
+
+        } catch (PDOException $e) {
+            error_log("❌ Error en BD: " . $e->getMessage());
+            echo "<script>alert('❌ Error al guardar en la base de datos: " . $e->getMessage() . "'); window.history.back();</script>";
+        }
+
+    } else {
+        echo "<script>alert('❌ Error al mover el archivo.'); window.history.back();</script>";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -44,7 +126,7 @@ $username = $_SESSION['username'];
         <h1>Gestión de Archivos</h1>
 
         <!-- 📁 Formulario de subida -->
-        <form action="../archivos/listarArchivos.php" method="POST" enctype="multipart/form-data" class="upload-form">
+        <form action="pestañaArchivos.php" method="POST" enctype="multipart/form-data" class="upload-form">
             <label>Seleccionar archivo PDF:</label>
             <input type="file" name="archivo" accept=".pdf" required>
 
@@ -94,9 +176,8 @@ $username = $_SESSION['username'];
                 <option value="Agua">Agua</option>
                 <option value="Tierra">Tierra</option>
                 <option value="Rayo">Rayo</option>
+                <option value="Ninguno">Ninguno</option>
             </select>
-
-            <input type="hidden" name="usuario" value="<?= htmlspecialchars($username) ?>">
 
             <button type="submit">Subir archivo</button>
         </form>
@@ -201,7 +282,7 @@ $username = $_SESSION['username'];
                         <td>${a.elemento}</td>
                         <td>${a.usuario}</td>
                         <td>${a.fecha_subida}</td>
-                        <td><a href="${a.ruta}" target="_blank">📄 Abrir</a></td>
+                        <td><a href="../archivos/abrirArchivos.php?id=${a.id}" target="_blank">📄 Abrir</a></td>
                         <td><button class="eliminar-btn" data-id="${a.id}" title="Eliminar">🗑️</button></td>
                     `;
                     tabla.appendChild(tr);

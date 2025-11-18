@@ -56,7 +56,9 @@ try {
             $sql .= " AND nivel_riesgo IN ('D', 'C')";
             break;
         case 'Jonin':
-        case 'ANBU':
+            $sql .= " AND nivel_riesgo IN ('D', 'C', 'B')";
+            break;
+        case 'Anbu':
             $sql .= " AND nivel_riesgo IN ('D', 'C', 'B', 'A')";
             break;
         case 'Hokage':

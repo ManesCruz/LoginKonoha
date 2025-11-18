@@ -24,11 +24,6 @@
                 </div>
             </div>
 
-<!-- esta linea es para tenerla en cuenta -->
-                <!--<div class="pass-link">
-                    <a href="#">¿Olvidaste tu contraseña?</a>
-                </div>-->
-
                 <div class="field">
                     <input type="submit" value="Iniciar Sesión">
                 </div>
