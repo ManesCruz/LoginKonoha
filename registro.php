@@ -27,9 +27,17 @@
                 <label for="documento_identidad"># de documento</label>
             </div>
             <div class="field">
-                <input type="password" id="password" name="password" required>
-                <label for="password">Contraseña</label>
-            </div>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                required
+                minlength="8"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.,;:#^+=_-]).{8,}$"
+                title="La contraseña debe tener mínimo 8 caracteres, incluir mayúscula, minúscula, número y un caracter especial."
+            >
+            <label for="password">Contraseña</label>
+          </div>
             <div class="field">
                 <select id="role_id" name="role_id" required>
                     <option value="2">Genin</option>

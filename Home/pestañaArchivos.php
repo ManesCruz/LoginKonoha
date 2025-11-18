@@ -105,13 +105,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
     <!-- ✅ Librería SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        function toggleTipoJutsu() {
-            const tipoArchivo = document.getElementById("tipo_archivo").value;
-            const jutsuDiv = document.getElementById("tipoJutsuDiv");
-            jutsuDiv.style.display = tipoArchivo === "Jutsu" ? "block" : "none";
+   <script>
+    function toggleTipoJutsu() {
+        const tipoArchivo = document.getElementById("tipo_archivo").value;
+        const jutsuDiv = document.getElementById("tipoJutsuDiv");
+        const selectJutsu = document.querySelector("select[name='tipo_jutsu']");
+
+        if (tipoArchivo === "Jutsu") {
+            jutsuDiv.style.display = "block";
+            selectJutsu.setAttribute("required", "true");
+        } else {
+            jutsuDiv.style.display = "none";
+            selectJutsu.removeAttribute("required");
+            selectJutsu.value = ""; // limpiar campo
         }
-    </script>
+    }
+</script>
 </head>
 <body>
     <div class="sidebar">
@@ -151,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
 
             <div id="tipoJutsuDiv" style="display:none;">
                 <label>Tipo de jutsu:</label>
-                <select name="tipo_jutsu">
+                <select name="tipo_jutsu" required>
                     <option value="">Seleccione...</option>
                     <option value="Ninjutsu">Ninjutsu</option>
                     <option value="Genjutsu">Genjutsu</option>
@@ -161,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
             </div>
 
             <label>Clan:</label>
-            <select name="clan">
+            <select name="clan" required>
                 <option value="">Seleccione...</option>
                 <option value="Uchiha">Uchiha</option>
                 <option value="Hyūga">Hyūga</option>
@@ -169,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
             </select>
 
             <label>Elemento:</label>
-            <select name="elemento">
+            <select name="elemento" required>
                 <option value="">Seleccione...</option>
                 <option value="Fuego">Fuego</option>
                 <option value="Viento">Viento</option>

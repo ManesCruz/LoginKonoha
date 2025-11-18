@@ -17,12 +17,6 @@
                 <input type="password" name="password" required>
                 <label for="password">Contraseña</label> 
             </div>
-            <div class="content"> <!-- Agregado contenedor para checkbox -->
-                <div class="checkbox">
-                    <input type="checkbox" id="remember-me">
-                    <label for="remember-me">Recuérdame</label>
-                </div>
-            </div>
 
                 <div class="field">
                     <input type="submit" value="Iniciar Sesión">
